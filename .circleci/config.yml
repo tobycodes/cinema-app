@@ -18,8 +18,7 @@ jobs:
       - save_cache:
           paths:
             - node_modules
-          key:
-            -app-{{ checksum "package.json" }}
+          key: -app-{{ checksum "package.json" }}
   deploy-to-aws-s3:
     docker:
       - image: circleci/node:latest
@@ -36,7 +35,7 @@ jobs:
             sudo apt-get -y -qq update
             sudo apt-get install -y awscli
             sudo apt-get install -y python-pip python-dev build-essential
-      - run: 
+      - run:
           name: Build project
           command: |
             yarn install
@@ -72,7 +71,7 @@ jobs:
             sudo apt-get -y -qq update
             sudo apt-get install -y awscli
             sudo apt-get install -y python-pip python-dev build-essential
-      - run: 
+      - run:
           name: Build project
           command: |
             yarn install
@@ -98,8 +97,8 @@ workflows:
     jobs:
       - build
       - deploy-to-aws-s3:
-        requires:
-          - build
+          requires:
+            - build
           filters:
             branches:
               only:
@@ -107,12 +106,11 @@ workflows:
                 - staging
                 - master
       - deploy-to-aws-cloudfront:
-        requires:
-          - build
+          requires:
+            - build
           filters:
             branches:
               only:
                 - develop
                 - staging
                 - master
-      
