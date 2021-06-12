@@ -48,12 +48,12 @@ jobs:
           command: |
             if [ "${CURRENT_BRANCH}" == "master" ]
             then 
-              aws --region ${AWS_REGION} s3 sync ~/repo/build ${AWS_BUCKET_PROD} --delete
+              aws --region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_BUCKET_PROD} --delete
             elif [ "${CURRENT_BRANCH}" == "staging" ]
             then 
-              aws --region ${AWS_REGION} s3 sync ~/repo/build ${AWS_BUCKET_STAGING} --delete
+              aws --region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_BUCKET_STAGING} --delete
             else
-              aws --region ${AWS_REGION} s3 sync ~/repo/build ${AWS_BUCKET_DEV} --delete
+              aws --region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_BUCKET_DEV} --delete
             fi
   deploy-to-aws-cloudfront:
     docker:
@@ -85,12 +85,12 @@ jobs:
             aws configure set preview.cloudfront
             if [ "${CURRENT_BRANCH}" == "master" ]
             then 
-              aws cloudfront create-invalidation --distribution-id ${PROD_DISTRIBUTION_ID} --paths /\*
+              aws cloudfront create-invalidation --distribution-id s3://${PROD_DISTRIBUTION_ID} --paths /\*
             elif [ "${CURRENT_BRANCH}" == "staging" ]
             then 
-              aws cloudfront create-invalidation --distribution-id ${STAGING_DISTRIBUTION_ID} --paths /\*
+              aws cloudfront create-invalidation --distribution-id s3://${STAGING_DISTRIBUTION_ID} --paths /\*
             else
-              aws cloudfront create-invalidation --distribution-id ${DEV_DISTRIBUTION_ID} --paths /\*
+              aws cloudfront create-invalidation --distribution-id s3://${DEV_DISTRIBUTION_ID} --paths /\*
             fi
 workflows:
   build_and_deploy:
