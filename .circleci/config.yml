@@ -13,16 +13,13 @@ jobs:
           keys:
             - app-{{ checksum "package.json" }}
       - run:
-          name: Install yarn
-          command: npm install -g yarn
-      - run:
           name: Install dependencies
-          command: yarn install
+          command: npm install
       - save_cache:
           paths:
             - node_modules
           key:
-            - app-{{ checksum "package.json" }}
+            -app-{{ checksum "package.json" }}
   deploy-to-aws-s3:
     docker:
       - image: circleci/node:latest
@@ -35,13 +32,13 @@ jobs:
       - run:
           name: Install AWS CLI
           working_directory: /
-          command: >
-          sudo apt-get -y -qq update
-          sudo apt-get install -y awscli
-          sudo apt-get install -y python-pip python-dev build-essential
+          command: |
+            sudo apt-get -y -qq update
+            sudo apt-get install -y awscli
+            sudo apt-get install -y python-pip python-dev build-essential
       - run: 
           name: Build project
-          command: >
+          command: |
             yarn install
             yarn run build
             cd build
@@ -49,7 +46,7 @@ jobs:
             echo "Build successful"
       - run:
           name: Deploy to AWS S3
-          command: >
+          command: |
             if [ "${CURRENT_BRANCH}" == "master"]
             then 
               aws s3 --region ${AWS_REGION} s3 sync ~/repo/build ${AWS_BUCKET_PROD} --delete
@@ -71,13 +68,13 @@ jobs:
       - run:
           name: Install AWS CLI
           working_directory: /
-          command: >
-          sudo apt-get -y -qq update
-          sudo apt-get install -y awscli
-          sudo apt-get install -y python-pip python-dev build-essential
+          command: |
+            sudo apt-get -y -qq update
+            sudo apt-get install -y awscli
+            sudo apt-get install -y python-pip python-dev build-essential
       - run: 
           name: Build project
-          command: >
+          command: |
             yarn install
             yarn run build
             cd build
@@ -85,7 +82,7 @@ jobs:
             echo "Build successful"
       - run:
           name: Deploy to AWS Cloudfront
-          command: >
+          command: |
             aws configure set preview.cloudfront
             if [ "${CURRENT_BRANCH}" == "master"]
             then 
@@ -99,7 +96,7 @@ jobs:
 workflows:
   build_and_deploy:
     jobs:
-      - build:
+      - build
       - deploy-to-aws-s3:
         requires:
           - build
