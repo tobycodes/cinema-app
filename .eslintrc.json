@@ -28,7 +28,6 @@
       { "anonymous": "always", "named": "always" }
     ],
     "camelcase": 0,
-    "no-return-assign": 0,
-    "quotes": "off"
+    "no-return-assign": 0
   }
 }
