@@ -6,24 +6,24 @@ executors:
     working_directory: ~/repo
 
 aliases:
-  - &show-current-branch-name:
+  - &show-current-branch-name
     run:
       name: Show current branch
       command: echo ${CIRCLE_BRANCH}
-  - &restore-cache:
+  - &restore-cache
     restore_cache:
       keys:
         - app-{{ checksum "package.json" }}
-  - &install-dependencies:
+  - &install-dependencies
     run:
       name: Install dependencies
       command: npm install
-  - &save-cache:
+  - &save-cache
     save_cache:
       paths:
         - node_modules
-      key: -app-{{ checksum "package.json" }}
-  - &install-aws-cli:
+      key: app-{{ checksum "package.json" }}
+  - &install-aws-cli
     run:
       name: Install AWS CLI
       working_directory: /
@@ -31,7 +31,7 @@ aliases:
         sudo apt-get -y -qq update
         sudo apt-get install -y awscli
         sudo apt-get install -y python-pip python-dev build-essential
-  - &build-project:
+  - &build-project
     run:
       name: Build project
       command: |
@@ -41,22 +41,21 @@ aliases:
         zip ../build.zip -r *.[^.]*
         echo "Build successful"
 
-
 jobs:
   build:
     executor: app-executor
     steps:
       - checkout
-      - show-current-branch-name
-      - restore-cache
-      - install-dependencies
-      - save-cache
+      - *show-current-branch-name
+      - *restore-cache
+      - *install-dependencies
+      - *save-cache
   linting:
     executor: app-executor
     steps:
       - checkout
-      - show-current-branch-name
-      - restore-cache
+      - *show-current-branch-name
+      - *restore-cache
       - run:
           name: Run linting
           command: npm run lint
@@ -64,9 +63,9 @@ jobs:
     executor: app-executor
     steps:
       - checkout
-      - show-current-branch-name
-      - install-aws-cli
-      - build-project
+      - *show-current-branch-name
+      - *install-aws-cli
+      - *build-project
       - run:
           name: Deploy to AWS S3
           command: |
@@ -83,9 +82,9 @@ jobs:
     executor: app-executor
     steps:
       - checkout
-      - show-current-branch-name
-      - install-aws-cli
-      - build-project
+      - *show-current-branch-name
+      - *install-aws-cli
+      - *build-project
       - run:
           name: Deploy to AWS Cloudfront
           command: |
