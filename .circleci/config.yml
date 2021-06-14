@@ -46,7 +46,16 @@ aliases:
         cd build
         zip ../build.zip -r *.[^.]*
         echo "Build successful"
-
+  - &notify-pass-on-slack
+    slack/notify:
+      event: pass
+      channel: 'cinema-app-circleci'
+      template: 'basic_success_1'
+  - &notify-fail-on-slack
+    slack/notify:
+      event: fail
+      channel: 'cinema-app-circleci'
+      template: 'basic_fail_1'
 jobs:
   build:
     executor: app-executor
@@ -56,14 +65,9 @@ jobs:
       - *restore-cache
       - *install-dependencies
       - *save-cache
-      - slack/notify:
-          - event: pass
-          - channel: 'cinema-app-circleci'
-          - template: 'basic_success_1'
-      - slack/notify:
-          - event: fail
-          - channel: 'cinema-app-circleci'
-          - template: 'basic_fail_1'
+      - *notify-pass-on-slack
+      - *notify-fail-on-slack
+
   linting:
     executor: app-executor
     steps:
