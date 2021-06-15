@@ -234,7 +234,7 @@ workflows:
       #           - master
       - notify-via-slack:
           requires:
-            - deploy-to-aws-cloudfront
+            - build
           filters:
             branches:
               only:
