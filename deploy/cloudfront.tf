@@ -4,6 +4,7 @@
 
 resource "aws_cloudfront_distribution" "s3_distribution" {
   origin {
+    origin_id   = local.s3_origin_id
     custom_origin_config {
       http_port              = 80
       https_port             = 443
@@ -12,6 +13,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     }
 
     domain_name = aws_s3_bucket.cinema_app_s3_bucket.bucket_regional_domain_name
+    origin_id = "default-origin"
   }
 
   retain_on_delete    = true
