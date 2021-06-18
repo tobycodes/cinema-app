@@ -4,7 +4,6 @@
 
 resource "aws_cloudfront_distribution" "s3_distribution" {
   origin {
-    origin_id   = local.s3_origin_id
     custom_origin_config {
       http_port              = 80
       https_port             = 443
