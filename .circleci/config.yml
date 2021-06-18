@@ -132,6 +132,7 @@ jobs:
             terraform apply --auto-approve
             terraform output cinema_app_bucket_name > ../cinema_bucket_name.txt
             terraform output cloudfront_distribution_id > ../cloudfront_distribution_id.txt
+            echo $(cat artifacts/cinema_bucket_name.txt | sed 's/\"//g')
       - persist_to_workspace:
           root: ./
           paths:
@@ -296,33 +297,33 @@ workflows:
                 - develop
                 - staging
                 - master
-      - deploy-to-aws-s3:
-          requires:
-            - terraform-plan-and-apply
-          filters:
-            branches:
-              only:
-                - develop
-                - staging
-                - master
-      - deploy-to-aws-cloudfront:
-          requires:
-            - deploy-to-aws-s3
-          filters:
-            branches:
-              only:
-                - develop
-                - staging
-                - master
-      - notify-via-slack:
-          requires:
-            - deploy-to-aws-cloudfront
-          filters:
-            branches:
-              only:
-                - develop
-                - staging
-                - master
+      # - deploy-to-aws-s3:
+      #     requires:
+      #       - terraform-plan-and-apply
+      #     filters:
+      #       branches:
+      #         only:
+      #           - develop
+      #           - staging
+      #           - master
+      # - deploy-to-aws-cloudfront:
+      #     requires:
+      #       - deploy-to-aws-s3
+      #     filters:
+      #       branches:
+      #         only:
+      #           - develop
+      #           - staging
+      #           - master
+      # - notify-via-slack:
+      #     requires:
+      #       - deploy-to-aws-cloudfront
+      #     filters:
+      #       branches:
+      #         only:
+      #           - develop
+      #           - staging
+      #           - master
       - hold:
           type: approval
           requires:
