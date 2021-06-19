@@ -63,7 +63,7 @@ aliases:
       template: 'basic_fail_1'
   - &persist-to-workspace
     persist_to_workspace:
-      root: /
+      root: ./
       paths:
         - artifacts
 jobs:
@@ -121,7 +121,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: /
+          at: ./
       - *show-current-branch-name
       - run:
           name: Terraform Plan
@@ -144,7 +144,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: /
+          at: ./
       - *show-current-branch-name
       - *install-aws-cli
       - *build-project
@@ -169,7 +169,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: /
+          at: ./
       - *show-current-branch-name
       - *install-aws-cli
       - *build-project
