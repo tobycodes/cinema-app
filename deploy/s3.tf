@@ -17,7 +17,7 @@ resource "aws_s3_bucket" "cinema_app_s3_bucket" {
         "s3:GetObject"
       ],
       "Effect": "Allow",
-      "Resource": "arn:aws::s3:::${local.prefix}-app/*",
+      "Resource": "arn:aws:s3:::${local.prefix}-app/*",
       "Principal": "*"
     }
   ]
