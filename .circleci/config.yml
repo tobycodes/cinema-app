@@ -112,7 +112,9 @@ jobs:
           name: Terraform Validate and Format
           command: |
             cd deploy/
-            terraform init --backend=false
+            terraform init -backend=false
+            terraform validate
+            terraform fmt -check
 
   terraform-plan-and-apply:
     executor: terraform-executor
@@ -132,10 +134,8 @@ jobs:
           command: cd artifacts/deploy/
             terraform workspace select ${CIRCLE_BRANCH}
             terraform apply --auto-approve
-            cd ../
-            touch cinema_bucket_name.txt cloudfront_distribution_id.txt
-            terraform output cinema_app_bucket_name > cinema_bucket_name.txt
-            terraform output cloudfront_distribution_id > cloudfront_distribution_id.txt
+            terraform output cinema_app_bucket_name > ../cinema_bucket_name.txt
+            terraform output cloudfront_distribution_id > ../cloudfront_distribution_id.txt
             echo $(cat artifacts/cinema_bucket_name.txt | sed 's/\"//g')
       - *persist-to-workspace
 
