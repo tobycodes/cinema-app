@@ -61,6 +61,11 @@ aliases:
       event: fail
       channel: 'cinema-app-circleci'
       template: 'basic_fail_1'
+  - &persist-to-workspace
+    persist_to_workspace:
+      root: /
+      paths:
+        - artifacts
 jobs:
   build:
     executor: app-executor
@@ -73,11 +78,8 @@ jobs:
       - *notify-fail-on-slack
       - run:
           name: Copy Deploy Folder
-          command: cp -r deploy artifacts/infrastructure
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - artifacts
+          command: cp -R deploy artifacts/deploy
+      - *persist-to-workspace
 
   linting:
     executor: app-executor
@@ -111,39 +113,38 @@ jobs:
           command: |
             cd deploy/
             terraform init --backend=false
+            terraform validate
+            terraform fmt --check
 
   terraform-plan-and-apply:
     executor: terraform-executor
     steps:
       - checkout
       - attach_workspace:
-          at: ./
+          at: /
       - *show-current-branch-name
       - run:
           name: Terraform Plan
-          command: cd artifacts/infrastructure/
+          command: cd artifacts/deploy/
             terraform init
             terraform workspace select ${CIRCLE_BRANCH} || terraform workspace new ${CIRCLE_BRANCH}
             terraform plan
       - run:
           name: Terraform Apply
-          command: cd artifacts/infrastructure/
+          command: cd artifacts/deploy/
             terraform workspace select ${CIRCLE_BRANCH}
             terraform apply --auto-approve
             terraform output cinema_app_bucket_name > ../cinema_bucket_name.txt
             terraform output cloudfront_distribution_id > ../cloudfront_distribution_id.txt
             echo $(cat artifacts/cinema_bucket_name.txt | sed 's/\"//g')
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - artifacts
+      - *persist-to-workspace
 
   deploy-to-aws-s3:
     executor: app-executor
     steps:
       - checkout
       - attach_workspace:
-          at: ./
+          at: /
       - *show-current-branch-name
       - *install-aws-cli
       - *build-project
@@ -168,7 +169,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: ./
+          at: /
       - *show-current-branch-name
       - *install-aws-cli
       - *build-project
@@ -297,37 +298,37 @@ workflows:
                 - develop
                 - staging
                 - master
-      # - deploy-to-aws-s3:
-      #     requires:
-      #       - terraform-plan-and-apply
-      #     filters:
-      #       branches:
-      #         only:
-      #           - develop
-      #           - staging
-      #           - master
-      # - deploy-to-aws-cloudfront:
-      #     requires:
-      #       - deploy-to-aws-s3
-      #     filters:
-      #       branches:
-      #         only:
-      #           - develop
-      #           - staging
-      #           - master
-      # - notify-via-slack:
-      #     requires:
-      #       - deploy-to-aws-cloudfront
-      #     filters:
-      #       branches:
-      #         only:
-      #           - develop
-      #           - staging
-      #           - master
+      - deploy-to-aws-s3:
+          requires:
+            - terraform-plan-and-apply
+          filters:
+            branches:
+              only:
+                - develop
+                - staging
+                - master
+      - deploy-to-aws-cloudfront:
+          requires:
+            - deploy-to-aws-s3
+          filters:
+            branches:
+              only:
+                - develop
+                - staging
+                - master
+      - notify-via-slack:
+          requires:
+            - deploy-to-aws-cloudfront
+          filters:
+            branches:
+              only:
+                - develop
+                - staging
+                - master
       - hold:
           type: approval
           requires:
-            - terraform-plan-and-apply
+            - deploy-to-aws-cloudfront
       - terraform-destroy:
           requires:
             - hold
