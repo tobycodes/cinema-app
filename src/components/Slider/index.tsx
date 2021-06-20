@@ -1,15 +1,19 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FC, useCallback } from 'react';
 import './index.scss';
+import Indicators from './Indicators';
+import RenderArrows from './RenderArrows';
+
+export type SlideActionType = 'prev' | 'next';
 
 const IMAGES = Array.from({ length: 5 }, (_, i) => ({ id: i, url: `https://source.unsplash.com/random/${i}` }));
 const SLIDER_INTERVAL = 5000;
 
-const Slider = () => {
+const Slider: FC = () => {
   const [curIndex, setCurIndex] = useState(0);
   const slidesLength = IMAGES.length;
 
-  const handleSlideChange = (type) => {
+  const handleSlideChange = (type: SlideActionType) => {
     switch (type) {
       case 'prev':
         if (curIndex <= 0) setCurIndex(slidesLength - 1);
@@ -23,10 +27,10 @@ const Slider = () => {
     }
   };
 
-  const handleAutoSlideChange = () => {
+  const handleAutoSlideChange = useCallback(() => {
     if (curIndex < slidesLength - 1) setCurIndex(curIndex + 1);
     else setCurIndex(0);
-  };
+  }, [curIndex, slidesLength]);
 
   useEffect(() => {
     const timeout = setTimeout(handleAutoSlideChange, SLIDER_INTERVAL);
@@ -34,7 +38,7 @@ const Slider = () => {
     return () => {
       clearTimeout(timeout);
     };
-  }, [curIndex]);
+  }, [curIndex, handleAutoSlideChange]);
 
   return (
     <div className="slider">
@@ -43,25 +47,6 @@ const Slider = () => {
         <Indicators slides={IMAGES} currentSlide={curIndex} />
         <RenderArrows switchSlide={handleSlideChange} />
       </div>
-    </div>
-  );
-};
-
-const Indicators = ({ slides, currentSlide }) => {
-  return (
-    <div className="slider-nav">
-      {slides.map(({ id }, i) => (
-        <button key={id} className={`slider-nav-button${i === currentSlide ? ' slider-nav-button--active' : ''}`} />
-      ))}
-    </div>
-  );
-};
-
-const RenderArrows = ({ switchSlide }) => {
-  return (
-    <div className="slider-arrows">
-      <button className="slider-arrow slider-arrow--left" onClick={() => switchSlide('prev')}></button>
-      <button className="slider-arrow slider-arrow--right" onClick={() => switchSlide('next')}></button>
     </div>
   );
 };

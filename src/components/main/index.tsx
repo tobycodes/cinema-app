@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { FC } from 'react';
 import './index.scss';
 
 import Content from '../content';
 
-const Main = () => {
+const Main: FC = () => {
   return (
     <div className="main">
       <Content />
