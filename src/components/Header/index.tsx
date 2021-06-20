@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './index.scss';
 import logo from '../../assets/logo.svg';
+import { FC } from 'react';
 
 const HEADER_LIST = [
   { id: 1, iconClass: 'fas fa-film', name: 'Now Playing', type: 'now_playing' },
@@ -9,7 +10,7 @@ const HEADER_LIST = [
   { id: 4, iconClass: 'fas fa-plus-square', name: 'Upcoming', type: 'upcoming' }
 ];
 
-const Header = () => {
+const Header: FC = () => {
   const [showMobileNav, setShowMobileNav] = useState(false);
 
   const toggle = () => setShowMobileNav((state) => !state);

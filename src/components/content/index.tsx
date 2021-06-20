@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { FC } from 'react';
 
 import Slider from '../Slider';
 import './index.scss';
 
-const Content = () => {
+const Content: FC = () => {
   return (
     <div className="main-content">
       <Slider />
