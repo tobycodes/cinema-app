@@ -6,7 +6,10 @@ import RenderArrows from './RenderArrows';
 
 export type SlideActionType = 'prev' | 'next';
 
-const IMAGES = Array.from({ length: 5 }, (_, i) => ({ id: i, url: `https://source.unsplash.com/random/${i}` }));
+export const IMAGES = Array.from({ length: 5 }, (_, i) => ({
+  id: i,
+  url: `https://source.unsplash.com/random/${i}`
+}));
 const SLIDER_INTERVAL = 5000;
 
 const Slider: FC = () => {
@@ -27,6 +30,8 @@ const Slider: FC = () => {
     }
   };
 
+  const handleGoToSlide = (slideIndex: number) => setCurIndex(slideIndex);
+
   const handleAutoSlideChange = useCallback(() => {
     if (curIndex < slidesLength - 1) setCurIndex(curIndex + 1);
     else setCurIndex(0);
@@ -43,8 +48,11 @@ const Slider: FC = () => {
   return (
     <div className="slider">
       <div className="slider-items">
-        <div className="slider-image" style={{ backgroundImage: `url(${IMAGES[curIndex].url})` }}></div>
-        <Indicators slides={IMAGES} currentSlide={curIndex} />
+        <div
+          className="slider-image"
+          style={{ backgroundImage: `url(${IMAGES[curIndex].url})` }}
+        ></div>
+        <Indicators slides={IMAGES} currentSlide={curIndex} goToSlide={handleGoToSlide} />
         <RenderArrows switchSlide={handleSlideChange} />
       </div>
     </div>
