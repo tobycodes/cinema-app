@@ -43,7 +43,7 @@ const Slider: FC = () => {
   return (
     <div className="slider">
       <div className="slider-items">
-        {/* <div className="slider-image" style={{ backgroundImage: `url(${IMAGES[curIndex].url})` }}></div> */}
+        <div className="slider-image" style={{ backgroundImage: `url(${IMAGES[curIndex].url})` }}></div>
         <Indicators slides={IMAGES} currentSlide={curIndex} />
         <RenderArrows switchSlide={handleSlideChange} />
       </div>
