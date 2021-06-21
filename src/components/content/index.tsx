@@ -33,8 +33,8 @@ const Content: FC = () => {
         <div className="paginate">
           <Paginate curPage={currentPage} totalPages={20} paginate={handlePaginate} />
         </div>
-        <Grid />
       </div>
+      <Grid />
     </div>
   );
 };

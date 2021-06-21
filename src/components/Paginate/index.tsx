@@ -10,7 +10,7 @@ interface PaginateProps {
 
 const Paginate: FC<PaginateProps> = ({ curPage, totalPages, paginate }) => {
   return (
-    <div>
+    <>
       <span className="page-count">
         {curPage} - {totalPages}
       </span>
@@ -20,7 +20,7 @@ const Paginate: FC<PaginateProps> = ({ curPage, totalPages, paginate }) => {
       <button className={`paginate-button${curPage === totalPages ? ' disable' : ''}`} onClick={() => paginate('next')}>
         Next
       </button>
-    </div>
+    </>
   );
 };
 
