@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
 import { useState } from 'react';
+import Grid from '../Grid';
 import Paginate from '../Paginate';
 
 import Slider, { SlideActionType } from '../Slider';
@@ -32,6 +33,7 @@ const Content: FC = () => {
         <div className="paginate">
           <Paginate curPage={currentPage} totalPages={20} paginate={handlePaginate} />
         </div>
+        <Grid />
       </div>
     </div>
   );
