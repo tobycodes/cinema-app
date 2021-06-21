@@ -26,7 +26,11 @@ const Header: FC = () => {
         <div className="header-image">
           <img src={logo} alt="Cinema" />
         </div>
-        <div className={`header-menu-toggle${showMobileNav ? ' is-active' : ''}`} id="header-mobile-menu" onClick={toggle}>
+        <div
+          className={`header-menu-toggle${showMobileNav ? ' is-active' : ''}`}
+          id="header-mobile-menu"
+          onClick={toggle}
+        >
           <span className="bar"></span>
           <span className="bar"></span>
           <span className="bar"></span>
