@@ -10,9 +10,14 @@ export const IMAGES = Array.from({ length: 5 }, (_, i) => ({
   id: i,
   url: `https://source.unsplash.com/random/${i}`
 }));
+
 const SLIDER_INTERVAL = 5000;
 
-const Slider: FC = () => {
+interface IProps {
+  items?: Array<{ url: string }>;
+}
+
+const Slider: FC<IProps> = ({ items }) => {
   const [curIndex, setCurIndex] = useState(0);
   const slidesLength = IMAGES.length;
 
