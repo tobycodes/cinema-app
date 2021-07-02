@@ -1,42 +1,69 @@
 import React, { FC } from 'react';
-import { useState } from 'react';
-import Grid from '../Grid';
-import Paginate from '../Paginate';
+import { useCallback } from 'react';
+import { connect } from 'react-redux';
 
+import { getMovies } from '../../redux/actions/movies';
+import { IMAGE_URL } from '../../services/movieService';
+import { Movie, MovieCategory } from '../../types/app';
+import MoviesGrid from '../Grid';
+import Paginate from '../Paginate';
 import Slider, { SlideActionType } from '../Slider';
+
 import './index.scss';
 
-const Content: FC = () => {
-  const [currentPage, setCurrentPage] = useState(1);
+interface IProps {
+  movieList: Movie[];
+  movieCategory: MovieCategory;
+  totalPages: number;
+  page: number;
+  getMovies: (type: string, page?: number) => void;
+}
 
-  const handlePaginate = (action: SlideActionType) => {
-    switch (action) {
-      case 'prev':
-        if (currentPage > 1) setCurrentPage(currentPage - 1);
-        break;
+const Content: FC<IProps> = ({ movieList, movieCategory, page, totalPages, getMovies }) => {
+  const moviePosters = movieList.map((m) => ({
+    ...m,
+    imageUrl: IMAGE_URL + (m.backdrop_path || m.poster_path)
+  }));
 
-      case 'next':
-        if (currentPage < 20) setCurrentPage(currentPage + 1);
+  const handlePaginate = useCallback(
+    (action: SlideActionType) => {
+      switch (action) {
+        case 'prev':
+          if (page > 1) getMovies(movieCategory.type, page - 1);
+          break;
 
-        break;
+        case 'next':
+          if (page < totalPages) getMovies(movieCategory.type, page + 1);
+          break;
 
-      default:
-        break;
-    }
-  };
+        default:
+          break;
+      }
+    },
+    [getMovies, movieCategory.type, page, totalPages]
+  );
 
   return (
     <div className="main-content">
-      <Slider />
+      <Slider items={moviePosters.slice(0, 5)} showArrows={true} />
       <div className="movie-grid">
-        <div className="movie-type">now playing</div>
+        <div className="movie-type">{movieCategory.name}</div>
         <div className="paginate">
-          <Paginate curPage={currentPage} totalPages={20} paginate={handlePaginate} />
+          <Paginate curPage={page} totalPages={totalPages} paginate={handlePaginate} />
         </div>
       </div>
-      <Grid />
+      <MoviesGrid movieList={moviePosters} />
     </div>
   );
 };
 
-export default Content;
+const stateProps = ({ movies: { list, movieCategory, totalPages, page } }: any) => ({
+  movieList: list,
+  movieCategory,
+  totalPages,
+  page
+});
+
+const actionProps = { getMovies };
+
+export default connect(stateProps, actionProps)(Content);

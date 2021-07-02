@@ -20,9 +20,13 @@ const Rating: FC<RatingProps> = ({ rating, totalStars }) => {
   return (
     <div className="star-rating">
       <div className="back-stars">
-        {Array(totalStars).fill(<i className="fa fa-star" aria-hidden="true"></i>)}
+        {Array.from({ length: totalStars }, (_, i) => (
+          <i key={i} className="fa fa-star" aria-hidden="true"></i>
+        ))}
         <div className="front-stars" ref={ratingRef}>
-          {Array(totalStars).fill(<i className="fa fa-star" aria-hidden="true"></i>)}
+          {Array.from({ length: totalStars }, (_, i) => (
+            <i key={i} className="fa fa-star" aria-hidden="true"></i>
+          ))}
         </div>
       </div>
     </div>

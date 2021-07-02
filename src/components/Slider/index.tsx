@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect, FC, useCallback } from 'react';
+import { connect } from 'react-redux';
 import './index.scss';
 import Indicators from './Indicators';
 import RenderArrows from './RenderArrows';
@@ -14,12 +15,14 @@ export const IMAGES = Array.from({ length: 5 }, (_, i) => ({
 const SLIDER_INTERVAL = 5000;
 
 interface IProps {
-  items?: Array<{ url: string }>;
+  items: Array<{ id: string | number; imageUrl: string; [key: string]: any }>;
+  autoChange?: boolean;
+  showArrows?: boolean;
 }
 
-const Slider: FC<IProps> = ({ items }) => {
+const Slider: FC<IProps> = ({ items, autoChange = true, showArrows = true }) => {
   const [curIndex, setCurIndex] = useState(0);
-  const slidesLength = IMAGES.length;
+  const slidesLength = items.length;
 
   const handleSlideChange = (type: SlideActionType) => {
     switch (type) {
@@ -43,25 +46,27 @@ const Slider: FC<IProps> = ({ items }) => {
   }, [curIndex, slidesLength]);
 
   useEffect(() => {
-    const timeout = setTimeout(handleAutoSlideChange, SLIDER_INTERVAL);
+    if (autoChange) {
+      const timeout = setTimeout(handleAutoSlideChange, SLIDER_INTERVAL);
 
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [curIndex, handleAutoSlideChange]);
+      return () => {
+        clearTimeout(timeout);
+      };
+    }
+  }, [curIndex, handleAutoSlideChange, autoChange]);
 
   return (
     <div className="slider">
       <div className="slider-items">
         <div
           className="slider-image"
-          style={{ backgroundImage: `url(${IMAGES[curIndex].url})` }}
+          style={{ backgroundImage: `url(${items[curIndex]?.imageUrl})` }}
         ></div>
-        <Indicators slides={IMAGES} currentSlide={curIndex} goToSlide={handleGoToSlide} />
-        <RenderArrows switchSlide={handleSlideChange} />
+        <Indicators slides={items} currentSlide={curIndex} goToSlide={handleGoToSlide} />
+        {showArrows ? <RenderArrows switchSlide={handleSlideChange} /> : null}
       </div>
     </div>
   );
 };
 
-export default Slider;
+export default connect(({ app: { loading } }: any) => ({ loading }))(Slider);

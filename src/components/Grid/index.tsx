@@ -1,30 +1,35 @@
 import React, { FC } from 'react';
+import { Movie } from '../../types/app';
 import Rating from '../Rating';
-import { IMAGES } from '../Slider';
 
 import './index.scss';
+import LazyImage from '../LazyImage';
 
-const Grid: FC = () => {
+interface IProps {
+  movieList: Array<Movie & { imageUrl: string }>;
+}
+
+const Grid: FC<IProps> = ({ movieList }) => {
   return (
     <>
       <div className="grid">
-        {IMAGES.map((img) => (
-          <div key={img.id} className="">
-            <div className="grid-cell" style={{ backgroundImage: `url(${img.url})` }}>
+        {movieList.map(({ imageUrl, title, vote_average, id }) => {
+          return (
+            <LazyImage key={id} className="grid-cell" src={imageUrl}>
               <div className="grid-read-more">
                 <button className="grid-cell-button">Read More</button>
               </div>
               <div className="grid-detail">
-                <span className="grid-detail-title">Mission Impossible</span>
+                <span className="grid-detail-title">{title}</span>
                 <div className="grid-detail-rating">
-                  <Rating rating={4.5} totalStars={5} />
+                  <Rating rating={vote_average} totalStars={10} />
                   &nbsp; &nbsp;
-                  <span className="grid-vote-average">4.5</span>
+                  <span className="grid-vote-average">{vote_average}</span>
                 </div>
               </div>
-            </div>
-          </div>
-        ))}
+            </LazyImage>
+          );
+        })}
       </div>
     </>
   );
