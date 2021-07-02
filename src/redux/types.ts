@@ -1,0 +1,6 @@
+export const SET_MOVIE_LIST = 'SET_MOVIE_LIST';
+export const SET_ERRORS = 'SET_ERRORS';
+export const SET_PAGE_INFO = 'SET_PAGE_INFO';
+export const SET_LOADING = 'SET_LOADING';
+export const LOAD_MORE_MOVIE_RESULTS = 'LOAD_MORE_MOVIE_RESULTS';
+export const SET_MOVIE_CATEGORY = 'SET_MOVIE_CATEGORY';
