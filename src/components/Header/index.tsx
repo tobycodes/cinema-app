@@ -3,7 +3,14 @@ import './index.scss';
 import logo from '../../assets/logo.svg';
 import { FC } from 'react';
 import { connect } from 'react-redux';
-import { getMovies, setMovieCategory } from '../../redux/actions/movies';
+import { useDebouncedCallback } from 'use-debounce';
+
+import {
+  getMovies,
+  getSearchResults,
+  setMovieCategory,
+  setSearchQuery
+} from '../../redux/actions/movies';
 import { MovieCategory } from '../../types/app';
 
 const HEADER_LIST = [
@@ -15,12 +22,23 @@ const HEADER_LIST = [
 
 interface IProps {
   movieCategory: MovieCategory;
+  searchQuery: string;
   getMovies: (type: string, page?: number) => void;
   setMovieCategory: (movieCategory: MovieCategory) => void;
+  setSearchQuery: (query: string) => void;
+  getSearchResults: (query: string) => void;
 }
 
-const Header: FC<IProps> = ({ movieCategory, getMovies, setMovieCategory }) => {
+const Header: FC<IProps> = ({
+  movieCategory,
+  searchQuery,
+  getMovies,
+  setMovieCategory,
+  setSearchQuery,
+  getSearchResults
+}) => {
   const [showMobileNav, setShowMobileNav] = useState(false);
+  const debouncedSearch = useDebouncedCallback(getSearchResults, 500);
 
   const toggle = () => setShowMobileNav((state) => !state);
 
@@ -62,16 +80,29 @@ const Header: FC<IProps> = ({ movieCategory, getMovies, setMovieCategory }) => {
               <span className="header-list-name">{item.name}</span>
             </li>
           ))}
-          <input className="search-input" type="text" placeholder="Search for a movie" />
+
+          <input
+            className="search-input"
+            type="text"
+            placeholder="Search for a movie"
+            value={searchQuery}
+            onChange={(e) => {
+              const value = e.target.value;
+
+              setSearchQuery(value);
+              debouncedSearch(value);
+            }}
+          />
         </ul>
       </div>
     </div>
   );
 };
 
-const mapStateToProps = ({ movies: { movieCategory } }: any) => ({
-  movieCategory
+const mapStateToProps = ({ movies: { movieCategory, searchQuery } }: any) => ({
+  movieCategory,
+  searchQuery
 });
-const mapDispatchToProps = { getMovies, setMovieCategory };
+const mapDispatchToProps = { getMovies, setMovieCategory, setSearchQuery, getSearchResults };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);

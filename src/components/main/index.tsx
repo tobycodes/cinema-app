@@ -5,16 +5,26 @@ import Content from '../content';
 import Spinner from '../Spinner';
 import { connect } from 'react-redux';
 import { loadMoreMovies } from '../../redux/actions/movies';
-import { MovieCategory } from '../../types/app';
+import { Movie, MovieCategory } from '../../types/app';
+import SearchView from '../SearchView';
 
 interface IProps {
   loading: boolean;
   movieCategory: MovieCategory;
   page: number;
+  searchQuery: string;
+  searchResults: Movie[];
   loadMoreMovies: (type: string, page: number) => void;
 }
 
-const Main: FC<IProps> = ({ loading, movieCategory, page, loadMoreMovies }) => {
+const Main: FC<IProps> = ({
+  loading,
+  movieCategory,
+  page,
+  searchQuery,
+  searchResults,
+  loadMoreMovies
+}) => {
   const [divRef, setDivRef] = useState<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -37,6 +47,8 @@ const Main: FC<IProps> = ({ loading, movieCategory, page, loadMoreMovies }) => {
     <div className="main">
       {loading ? (
         <Spinner />
+      ) : searchQuery && searchResults.length ? (
+        <SearchView />
       ) : (
         <>
           <Content />
@@ -47,10 +59,15 @@ const Main: FC<IProps> = ({ loading, movieCategory, page, loadMoreMovies }) => {
   );
 };
 
-const mapStateToProps = ({ app: { loading }, movies: { page, movieCategory } }: any) => ({
+const mapStateToProps = ({
+  app: { loading },
+  movies: { page, movieCategory, searchQuery, searchResults }
+}: any) => ({
   loading,
   page,
-  movieCategory
+  movieCategory,
+  searchQuery,
+  searchResults
 });
 
 const mapDispatchToProps = { loadMoreMovies };
