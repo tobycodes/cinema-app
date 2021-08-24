@@ -12,6 +12,7 @@ import {
   setSearchQuery
 } from '../../redux/actions/movies';
 import { MovieCategory } from '../../types/app';
+import { Link } from 'react-router-dom';
 
 const HEADER_LIST = [
   { id: 1, iconClass: 'fas fa-film', name: 'Now Playing', type: 'now_playing' },
@@ -54,9 +55,11 @@ const Header: FC<IProps> = ({
     <div className="header-nav-wrapper">
       <div className="header-bar"></div>
       <div className="header-navbar">
-        <div className="header-image">
-          <img src={logo} alt="Cinema" />
-        </div>
+        <Link to="/">
+          <div className="header-image">
+            <img src={logo} alt="Cinema" />
+          </div>
+        </Link>
         <div
           className={`header-menu-toggle${showMobileNav ? ' is-active' : ''}`}
           id="header-mobile-menu"
