@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Movie } from '../../types/app';
+import { Movie } from 'types/app';
 import Rating from '../Rating';
 
 import './index.scss';

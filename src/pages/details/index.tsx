@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
 import { connect } from 'react-redux';
 import { useRouteMatch } from 'react-router-dom';
-import Crew from '../../components/details/Crew';
-import Media from '../../components/details/Media';
-import Overview from '../../components/details/Overview';
-import Reviews from '../../components/details/Reviews';
-import Tabs from '../../components/details/Tabs';
-import Rating from '../../components/Rating';
+import Crew from 'components/details/Crew';
+import Media from 'components/details/Media';
+import Overview from 'components/details/Overview';
+import Reviews from 'components/details/Reviews';
+import Tabs from 'components/details/Tabs';
+import Rating from 'components/Rating';
 
 import './index.scss';
 

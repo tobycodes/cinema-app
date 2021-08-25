@@ -1,7 +1,7 @@
 import React, { FC, useState, useRef } from 'react';
 import { useEffect } from 'react';
 import { CSSProperties } from 'react';
-import placeholder from '../../assets/lazy_loader.gif';
+import placeholder from 'assets/lazy_loader.gif';
 
 interface IProps {
   style?: CSSProperties;

@@ -15,7 +15,6 @@ const Rating: FC<RatingProps> = ({ rating, totalStars }) => {
       const percentage = (rating / totalStars) * 100;
 
       ratingRef.current.style.width = Math.floor(isFinite(percentage) ? percentage : 0) + '%';
-      console.log(rating);
     }
   }, [rating, totalStars]);
   return (

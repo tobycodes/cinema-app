@@ -1,5 +1,5 @@
 import React from 'react';
-import numberFormatter from '../../../utils/numberFormatter';
+import numberFormatter from 'utils/numberFormatter';
 
 import './index.scss';
 

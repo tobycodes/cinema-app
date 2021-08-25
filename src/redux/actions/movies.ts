@@ -1,5 +1,8 @@
 import { Dispatch } from 'redux';
 
+import movieService from 'services/movieService';
+import { Movie, MovieCategory } from 'types/app';
+import generateMovieArray from 'utils/generateMovieArray';
 import {
   SET_MOVIE_LIST,
   SET_ERRORS,
@@ -9,11 +12,7 @@ import {
   SET_SEARCH_QUERY,
   SET_SEARCH_RESULTS
 } from './../types';
-
-import movieService from '../../services/movieService';
 import { setLoading } from './app';
-import { Movie, MovieCategory } from '../../types/app';
-import generateMovieArray from '../../utils/generateMovieArray';
 
 export const getMovies =
   (type: string, page = 1) =>

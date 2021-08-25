@@ -2,8 +2,8 @@ import React, { FC } from 'react';
 import { useCallback } from 'react';
 import { connect } from 'react-redux';
 
-import { getMovies } from '../../redux/actions/movies';
-import { Movie, MovieCategory } from '../../types/app';
+import { getMovies } from 'redux/actions/movies';
+import { Movie, MovieCategory } from 'types/app';
 import MoviesGrid from '../Grid';
 import Paginate from '../Paginate';
 import Slider, { SlideActionType } from '../Slider';
