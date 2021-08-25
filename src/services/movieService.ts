@@ -9,7 +9,7 @@ export const REQUEST_URL = (type: string, page = 1) =>
   `${API_URL}/movie/${type}?api_key=${API_KEY}&language=en-US&page=${page}`;
 
 export const SEARCH_MOVIE_URL = (query: string) =>
-  `${API_URL}/search/movie/?api_key=${API_KEY}&language=en-US&query=${query}`;
+  `${API_URL}/search/movie?api_key=${API_KEY}&language=en-US&query=${query}`;
 
 export const requestMovies = async (type: string, page?: number) => {
   const { data } = await axios.get(REQUEST_URL(type, page));

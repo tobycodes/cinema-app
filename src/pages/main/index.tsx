@@ -1,12 +1,13 @@
 import React, { FC, useState, useEffect } from 'react';
-import './index.scss';
-
-import Content from '../../components/content';
-import Spinner from '../../components/Spinner';
 import { connect } from 'react-redux';
-import { loadMoreMovies } from '../../redux/actions/movies';
-import { Movie, MovieCategory } from '../../types/app';
-import SearchView from '../../components/SearchView';
+
+import Content from 'components/content';
+import Spinner from 'components/Spinner';
+import SearchView from 'components/SearchView';
+import { loadMoreMovies } from 'redux/actions/movies';
+import { Movie, MovieCategory } from 'types/app';
+
+import './index.scss';
 
 interface IProps {
   loading: boolean;

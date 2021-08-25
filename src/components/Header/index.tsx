@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import './index.scss';
-import logo from '../../assets/logo.svg';
-import { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
 
+import logo from 'assets/logo.svg';
 import {
   getMovies,
   getSearchResults,
   setMovieCategory,
   setSearchQuery
-} from '../../redux/actions/movies';
-import { MovieCategory } from '../../types/app';
-import { Link } from 'react-router-dom';
+} from 'redux/actions/movies';
+import { MovieCategory } from 'types/app';
+
+import './index.scss';
 
 const HEADER_LIST = [
   { id: 1, iconClass: 'fas fa-film', name: 'Now Playing', type: 'now_playing' },

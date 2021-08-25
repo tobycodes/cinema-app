@@ -27,7 +27,7 @@ type MovieReducerType = Modify<InitialState, { list: Movie[]; searchResults: Mov
 const movieReducer = (state = initialState, { type, payload }: any): MovieReducerType => {
   switch (type) {
     case SET_MOVIE_LIST:
-      return { ...state, list: payload.sort(() => Math.random() * 3839 - Math.random() * 3743) };
+      return { ...state, list: payload.sort(() => Math.random() - Math.random()) };
 
     case LOAD_MORE_MOVIE_RESULTS:
       return { ...state, list: [...state.list, ...payload] };

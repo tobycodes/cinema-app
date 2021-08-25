@@ -7,11 +7,6 @@ import RenderArrows from './RenderArrows';
 
 export type SlideActionType = 'prev' | 'next';
 
-export const IMAGES = Array.from({ length: 5 }, (_, i) => ({
-  id: i,
-  url: `https://source.unsplash.com/random/${i}`
-}));
-
 const SLIDER_INTERVAL = 5000;
 
 interface IProps {

@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
 import { connect } from 'react-redux';
 
-import { Movie } from '../../types/app';
-import './index.scss';
+import { Movie } from 'types/app';
 import Grid from '../Grid';
 
+import './index.scss';
 interface IProps {
   searchQuery: string;
   searchResults: Movie[];
