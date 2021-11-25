@@ -3,7 +3,7 @@ import {
   MovieImages,
   MovieReview,
   MovieVideos,
-  PaginatedRes
+  PaginatedRecord
 } from './../../types/app';
 import { Dispatch } from 'redux';
 
@@ -138,7 +138,7 @@ export const setMovieVideos = (videos: MovieVideos) => ({
   payload: videos
 });
 
-export const setMovieReviews = (reviews: PaginatedRes<MovieReview>) => ({
+export const setMovieReviews = (reviews: PaginatedRecord<MovieReview>) => ({
   type: SET_CURRENT_MOVIE_REVIEWS,
   payload: reviews
 });

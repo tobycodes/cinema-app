@@ -4,13 +4,15 @@ import store from 'redux/store';
 
 export type Res<T> = AxiosResponse<T>;
 
-export type PaginatedRes<T> = Res<{
+export type PaginatedRecord<T> = {
   results: T[];
   page: number;
   total_pages: number;
   id?: number;
   total_results?: number;
-}>;
+};
+
+export type PaginatedRes<T> = Res<PaginatedRecord<T>>;
 
 export type RootState = ReturnType<typeof store.getState>;
 
@@ -43,6 +45,23 @@ export type Movie = {
   spoken_languages: SpokenLanguage[];
   cast: MovieCast[];
   crew: MovieCrew[];
+};
+
+export type ProductionCompany = {
+  id: number;
+  logo_path: string;
+  name: string;
+  origin_country: string;
+};
+
+export type ProductionCountry = {
+  iso_3166_1: string;
+  name: string;
+};
+
+export type SpokenLanguage = {
+  iso_639_1: string;
+  name: string;
 };
 
 export type MovieCategory = {
@@ -123,21 +142,4 @@ export type MovieCredits = {
   id: number;
   cast: MovieCast[];
   crew: MovieCrew[];
-};
-
-export type ProductionCompany = {
-  id: number;
-  logo_path: string;
-  name: string;
-  origin_country: string;
-};
-
-export type ProductionCountry = {
-  iso_3166_1: string;
-  name: string;
-};
-
-export type SpokenLanguage = {
-  iso_639_1: string;
-  name: string;
 };
