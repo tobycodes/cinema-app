@@ -1,3 +1,4 @@
+import { AnyAction } from 'redux';
 import { Movie } from '../../types/app';
 import {
   SET_MOVIE_LIST,
@@ -5,26 +6,26 @@ import {
   LOAD_MORE_MOVIE_RESULTS,
   SET_MOVIE_CATEGORY,
   SET_SEARCH_QUERY,
-  SET_SEARCH_RESULTS
+  SET_SEARCH_RESULTS,
+  SET_CURRENT_MOVIE_DETAILS
 } from './../types';
 
 const initialState = {
-  list: [],
+  list: [] as Movie[],
   page: 1,
   totalPages: 1,
   movieCategory: { type: 'now_playing', name: 'Now Playing', id: 1 },
   searchQuery: '',
-  searchResults: []
+  searchResults: [] as Movie[],
+  currentMovie: {} as Movie
 };
 
 //stackoverflow
-type Modify<T, R> = Omit<T, keyof R> & R;
+// type Modify<T, R> = Omit<T, keyof R> & R;
 
-type InitialState = typeof initialState;
+type MovieReducerType = typeof initialState;
 
-type MovieReducerType = Modify<InitialState, { list: Movie[]; searchResults: Movie[] }>;
-
-const movieReducer = (state = initialState, { type, payload }: any): MovieReducerType => {
+const movieReducer = (state = initialState, { type, payload }: AnyAction): MovieReducerType => {
   switch (type) {
     case SET_MOVIE_LIST:
       return { ...state, list: payload.sort(() => Math.random() - Math.random()) };
@@ -45,6 +46,9 @@ const movieReducer = (state = initialState, { type, payload }: any): MovieReduce
 
     case SET_SEARCH_RESULTS:
       return { ...state, searchResults: [...payload] };
+
+    case SET_CURRENT_MOVIE_DETAILS:
+      return { ...state, currentMovie: payload };
 
     default:
       return state;

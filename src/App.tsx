@@ -1,25 +1,27 @@
-import React, { FC } from 'react';
-import { Provider } from 'react-redux';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import React, { FC, useEffect } from 'react';
+import { Switch, Route, useLocation } from 'react-router-dom';
 
 import Header from './components/Header';
 import Details from './pages/details';
 import Main from './pages/main';
-import store from './redux/store';
 
 const App: FC = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  }, [location.pathname]);
+
   return (
-    <Provider store={store}>
-      <Router>
-        <Header />
-        <div className="app">
-          <Switch>
-            <Route path="/:id/:name/details" component={Details} />
-            <Route path="/" component={Main} />
-          </Switch>
-        </div>
-      </Router>
-    </Provider>
+    <>
+      <Header />
+      <div className="app">
+        <Switch>
+          <Route path="/:id/:name/details" component={Details} />
+          <Route path="/" component={Main} />
+        </Switch>
+      </div>
+    </>
   );
 };
 

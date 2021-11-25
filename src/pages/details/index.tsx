@@ -1,5 +1,5 @@
-import React, { FC } from 'react';
-import { connect } from 'react-redux';
+import React, { FC, useEffect } from 'react';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { useRouteMatch } from 'react-router-dom';
 import Crew from 'components/details/Crew';
 import Media from 'components/details/Media';
@@ -7,44 +7,68 @@ import Overview from 'components/details/Overview';
 import Reviews from 'components/details/Reviews';
 import Tabs from 'components/details/Tabs';
 import Rating from 'components/Rating';
+import Spinner from 'components/Spinner';
+
+import { getMovieDetails, clearCurrentMovieDetails } from 'redux/actions/movies';
 
 import './index.scss';
+import { IMAGE_URL } from 'services/movieService';
 
 interface IProps {
   props: any;
   bgImageUrl: string;
 }
 
-const Details: FC<IProps> = ({ bgImageUrl }) => {
+const Details: FC<IProps> = () => {
+  const currentMovie = useSelector(({ movies }) => movies.currentMovie);
+  const loading = useSelector(({ app }) => app.loading);
+
+  console.log({ currentMovie });
+
   const { params } = useRouteMatch<{ id: string }>();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (params.id) dispatch(getMovieDetails(+params.id));
+
+    return () => {
+      dispatch(clearCurrentMovieDetails());
+    };
+  }, [params.id, dispatch]);
+
+  const bgImage = IMAGE_URL + currentMovie.backdrop_path;
+  const posterImage = IMAGE_URL + currentMovie.poster_path;
 
   return (
     <div>
-      <h1>Details page. ID: {params.id}</h1>
+      <h1>Details page. ID: {currentMovie.id}</h1>
       <div className="movie-container">
-        <div className="movie-bg" style={{ backgroundImage: `url(${bgImageUrl})` }}></div>
+        <div
+          className="movie-bg"
+          style={{ backgroundImage: `url(${bgImage || posterImage})` }}
+        ></div>
         <div className="movie-overlay"></div>
         <div className="movie-details">
           <div className="movie-image">
-            <img src={bgImageUrl} alt="" />
+            {loading ? <Spinner /> : <img src={posterImage || bgImage} alt="" />}
           </div>
           <div className="movie-body">
             <div className="movie-overview">
               <div className="title">
-                Avengers <span>2020-12-03</span>
+                {currentMovie.title} <span>{currentMovie.release_date}</span>
               </div>
               <div className="movie-genres">
                 <ul className="genres">
-                  <li>Action</li>
-                  <li>Comedy</li>
-                  <li>Sci-fi</li>
+                  {currentMovie.genres?.map((genre) => (
+                    <li key={genre.id}>{genre.name}</li>
+                  ))}
                 </ul>
               </div>
               <div className="rating">
-                <Rating rating={7.5} totalStars={10} />
+                <Rating rating={currentMovie.vote_average} totalStars={10} />
                 &nbsp;
-                <span>6.5</span>
-                <p>(200) reviews</p>
+                <span>{currentMovie.vote_average}</span>
+                <p>({currentMovie.vote_count}) reviews</p>
               </div>
               <Tabs>
                 <Child label="Overview">
