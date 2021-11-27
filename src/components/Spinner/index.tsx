@@ -3,10 +3,10 @@ import './index.scss';
 
 const Spinner: FC = () => {
   return (
-    <div className="spinner">
-      <div className="bounce bounce--1"></div>
-      <div className="bounce bounce--2"></div>
-      <div className="bounce bounce--3"></div>
+    <div className="spinner" data-testid="spinner">
+      <div className="bounce bounce--1" data-testid="bounce"></div>
+      <div className="bounce bounce--2" data-testid="bounce"></div>
+      <div className="bounce bounce--3" data-testid="bounce"></div>
     </div>
   );
 };
