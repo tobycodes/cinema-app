@@ -1,10 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import './index.scss';
-import logo from '../../assets/logo.svg';
-import { FC } from 'react';
+import React, { FC, useEffect, useState, useLayoutEffect } from 'react';
+import { Link, useLocation, useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { getMovies, setMovieCategory } from '../../redux/actions/movies';
-import { MovieCategory } from '../../types/app';
+import { useDebouncedCallback } from 'use-debounce';
+
+import logo from 'assets/logo.svg';
+import {
+  getMovies,
+  getSearchResults,
+  setMovieCategory,
+  setSearchQuery,
+  clearCurrentMovieDetails
+} from 'redux/actions/movies';
+import { MovieCategory } from 'types/app';
+
+import './index.scss';
 
 const HEADER_LIST = [
   { id: 1, iconClass: 'fas fa-film', name: 'Now Playing', type: 'now_playing' },
@@ -15,12 +24,28 @@ const HEADER_LIST = [
 
 interface IProps {
   movieCategory: MovieCategory;
+  searchQuery: string;
   getMovies: (type: string, page?: number) => void;
   setMovieCategory: (movieCategory: MovieCategory) => void;
+  setSearchQuery: (query: string) => void;
+  getSearchResults: (query: string) => void;
+  clearMovieDetails: () => void;
 }
 
-const Header: FC<IProps> = ({ movieCategory, getMovies, setMovieCategory }) => {
+const Header: FC<IProps> = ({
+  movieCategory,
+  searchQuery,
+  getMovies,
+  setMovieCategory,
+  setSearchQuery,
+  getSearchResults,
+  clearMovieDetails
+}) => {
   const [showMobileNav, setShowMobileNav] = useState(false);
+  const debouncedSearch = useDebouncedCallback(getSearchResults, 500);
+  const history = useHistory();
+  const { pathname } = useLocation();
+  const isHomePage = pathname === '/';
 
   const toggle = () => setShowMobileNav((state) => !state);
 
@@ -28,7 +53,7 @@ const Header: FC<IProps> = ({ movieCategory, getMovies, setMovieCategory }) => {
     getMovies(movieCategory.type);
   }, [getMovies, movieCategory.type]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     document.body.style.overflow = showMobileNav ? 'hidden' : 'auto';
   }, [showMobileNav]);
 
@@ -36,9 +61,11 @@ const Header: FC<IProps> = ({ movieCategory, getMovies, setMovieCategory }) => {
     <div className="header-nav-wrapper">
       <div className="header-bar"></div>
       <div className="header-navbar">
-        <div className="header-image">
-          <img src={logo} alt="Cinema" />
-        </div>
+        <Link to="/">
+          <div className="header-image">
+            <img src={logo} alt="Cinema" />
+          </div>
+        </Link>
         <div
           className={`header-menu-toggle${showMobileNav ? ' is-active' : ''}`}
           id="header-mobile-menu"
@@ -53,7 +80,14 @@ const Header: FC<IProps> = ({ movieCategory, getMovies, setMovieCategory }) => {
             <li
               key={item.id}
               className={`header-nav-item${item.id === movieCategory.id ? ' active-item' : ''}`}
-              onClick={() => setMovieCategory(item)}
+              onClick={() => {
+                if (!isHomePage) {
+                  clearMovieDetails();
+                  history.push('/');
+                }
+
+                setMovieCategory(item);
+              }}
             >
               <span className="header-list-name">
                 <i className={item.iconClass}></i>
@@ -62,16 +96,37 @@ const Header: FC<IProps> = ({ movieCategory, getMovies, setMovieCategory }) => {
               <span className="header-list-name">{item.name}</span>
             </li>
           ))}
-          <input className="search-input" type="text" placeholder="Search for a movie" />
+
+          {isHomePage && (
+            <input
+              className="search-input"
+              type="text"
+              placeholder="Search for a movie"
+              value={searchQuery}
+              onChange={(e) => {
+                const value = e.target.value;
+
+                setSearchQuery(value);
+                debouncedSearch(value);
+              }}
+            />
+          )}
         </ul>
       </div>
     </div>
   );
 };
 
-const mapStateToProps = ({ movies: { movieCategory } }: any) => ({
-  movieCategory
+const mapStateToProps = ({ movies: { movieCategory, searchQuery } }: any) => ({
+  movieCategory,
+  searchQuery
 });
-const mapDispatchToProps = { getMovies, setMovieCategory };
+const mapDispatchToProps = {
+  getMovies,
+  setMovieCategory,
+  setSearchQuery,
+  getSearchResults,
+  clearMovieDetails: clearCurrentMovieDetails
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);
