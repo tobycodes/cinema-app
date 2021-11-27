@@ -1,9 +1,10 @@
 {
+  "parser": "@typescript-eslint/parser",
   "env": {
     "browser": true,
     "es6": true
   },
-  "extends": ["plugin:react/recommended", "standard"],
+  "extends": ["plugin:react/recommended", "plugin:@typescript-eslint/recommended"],
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
@@ -17,17 +18,19 @@
   },
   "settings": {
     "react": {
-      "version": "17.0.2"
+      "pragma": "React",
+      "version": "detect"
     }
   },
-  "plugins": ["react"],
+  "plugins": ["react", "@typescript-eslint", "react-hooks"],
   "rules": {
     "semi": [2, "always"],
-    "space-before-function-paren": [
-      0,
-      { "anonymous": "always", "named": "always" }
-    ],
-    "camelcase": 0,
-    "no-return-assign": 0
+    "space-before-function-paren": [0, { "anonymous": "always", "named": "always" }],
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "react/prop-types": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-empty-function": "off"
   }
 }

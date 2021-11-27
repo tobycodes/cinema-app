@@ -6,21 +6,24 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
+    "axios": "^0.21.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.4",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "redux": "^4.1.0",
     "redux-thunk": "^2.3.0",
     "sass": "^1.35.1",
+    "use-debounce": "^7.0.0",
     "web-vitals": "^1.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "lint": "eslint src/**/*.js*",
-    "prettier:check": "prettier --check src/**/*.{js,jsx,json}",
-    "prettier:write": "prettier --write src/**/*.{js,jsx,json}",
+    "lint": "eslint src/**/*.ts*",
+    "prettier:check": "prettier --check src/**/*.{js,jsx,json,ts,tsx}",
+    "prettier:write": "prettier --write src/**/*.{js,jsx,json,ts,tsx}",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -43,14 +46,26 @@
     ]
   },
   "devDependencies": {
+    "@babel/preset-typescript": "^7.14.5",
+    "@types/axios": "^0.14.0",
+    "@types/react": "^17.0.11",
+    "@types/react-dom": "^17.0.8",
+    "@types/react-redux": "^7.1.16",
+    "@types/react-router-dom": "^5.1.7",
+    "@types/redux": "^3.6.0",
+    "@types/uuid": "^8.3.0",
+    "@typescript-eslint/eslint-plugin": "^4.27.0",
+    "@typescript-eslint/parser": "^4.27.0",
     "eslint": "^7.28.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.0",
     "eslint-plugin-react": "^7.24.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-standard": "^5.0.0",
     "prettier": "^2.3.1",
-    "redux-devtools-extension": "^2.13.9"
+    "redux-devtools-extension": "^2.13.9",
+    "typescript": "^4.3.4"
   }
 }
