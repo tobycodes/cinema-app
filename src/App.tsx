@@ -1,16 +1,14 @@
-import React, { FC, useEffect } from 'react';
-import { Switch, Route, useLocation } from 'react-router-dom';
+import React, { FC } from 'react';
+import { Switch, Route } from 'react-router-dom';
 
+import { useSmoothScroll } from 'hooks/useSmoothScroll';
 import Header from './components/Header';
 import Details from './pages/details';
 import Main from './pages/main';
 
 const App: FC = () => {
-  const location = useLocation();
-
-  useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-  }, [location.pathname]);
+  // Default behaviour is to scroll to top of page
+  useSmoothScroll();
 
   return (
     <>

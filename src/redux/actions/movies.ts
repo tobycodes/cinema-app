@@ -26,6 +26,7 @@ import {
   SET_CURRENT_MOVIE_VIDEOS
 } from './../types';
 import { setLoading } from './app';
+import { batch } from 'react-redux';
 
 export const getMovies =
   (type: string, page = 1) =>
@@ -70,11 +71,13 @@ export const getMovieDetails = (id: number) => async (dispatch: Dispatch) => {
       movieService.getMovieVideos(id)
     ]);
 
-    dispatch(setMovieDetails(movie));
-    dispatch(setMovieCredits(credits));
-    dispatch(setMovieImages(images));
-    dispatch(setMovieReviews(reviews));
-    dispatch(setMovieVideos(videos));
+    batch(() => {
+      dispatch(setMovieDetails(movie));
+      dispatch(setMovieCredits(credits));
+      dispatch(setMovieImages(images));
+      dispatch(setMovieReviews(reviews));
+      dispatch(setMovieVideos(videos));
+    });
   } catch (error: any) {
     if (error.response) {
       dispatch(setError(error.response.data.message));

@@ -17,8 +17,8 @@ const Grid: FC<IProps> = ({ movieList }) => {
         return (
           <LazyImage key={id} className="grid-cell" src={imageUrl}>
             <div className="grid-read-more">
-              <Link to={`/${id}/${title}/details`}>
-                <a className="grid-cell-link">Read More</a>
+              <Link to={`/${id}/${title}/details`} className="grid-cell-link">
+                Read More
               </Link>
             </div>
             <div className="grid-detail">

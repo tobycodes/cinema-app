@@ -12,6 +12,11 @@ import axios from 'axios';
 const API_URL = 'https://api.themoviedb.org/3';
 
 export const IMAGE_URL = 'https://image.tmdb.org/t/p/original';
+
+export const AVATAR_URL = 'http://placehold.it/54x81';
+
+export const COMPANY_AVATAR_URL = 'http://placehold.it/30x30';
+
 const API_KEY = process.env.REACT_APP_API_SECRET_KEY;
 
 const REQUEST_URL = (type: string, page = 1) =>

@@ -1,6 +1,6 @@
 import React, { FC, useEffect } from 'react';
 import { connect, useDispatch, useSelector } from 'react-redux';
-import { useRouteMatch } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Crew from 'components/details/Crew';
 import Media from 'components/details/Media';
 import Overview from 'components/details/Overview';
@@ -23,21 +23,23 @@ const Details: FC<IProps> = () => {
   const currentMovie = useSelector(({ movies }) => movies.currentMovie);
   const loading = useSelector(({ app }) => app.loading);
 
-  console.log({ currentMovie });
-
-  const { params } = useRouteMatch<{ id: string }>();
+  const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (params.id) dispatch(getMovieDetails(+params.id));
+    if (id) dispatch(getMovieDetails(+id));
 
     return () => {
       dispatch(clearCurrentMovieDetails());
     };
-  }, [params.id, dispatch]);
+  }, [id, dispatch]);
 
   const bgImage = IMAGE_URL + currentMovie.backdrop_path;
   const posterImage = IMAGE_URL + currentMovie.poster_path;
+
+  if (loading) return <Spinner />;
+
+  if (!currentMovie.overview) return null;
 
   return (
     <div>
@@ -50,7 +52,7 @@ const Details: FC<IProps> = () => {
         <div className="movie-overlay"></div>
         <div className="movie-details">
           <div className="movie-image">
-            {loading ? <Spinner /> : <img src={posterImage || bgImage} alt="" />}
+            <img src={posterImage || bgImage} alt="" />
           </div>
           <div className="movie-body">
             <div className="movie-overview">
