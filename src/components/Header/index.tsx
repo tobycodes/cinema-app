@@ -1,5 +1,5 @@
-import React, { FC, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { FC, useEffect, useState, useLayoutEffect } from 'react';
+import { Link, useLocation, useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
 
@@ -8,7 +8,8 @@ import {
   getMovies,
   getSearchResults,
   setMovieCategory,
-  setSearchQuery
+  setSearchQuery,
+  clearCurrentMovieDetails
 } from 'redux/actions/movies';
 import { MovieCategory } from 'types/app';
 
@@ -28,6 +29,7 @@ interface IProps {
   setMovieCategory: (movieCategory: MovieCategory) => void;
   setSearchQuery: (query: string) => void;
   getSearchResults: (query: string) => void;
+  clearMovieDetails: () => void;
 }
 
 const Header: FC<IProps> = ({
@@ -36,10 +38,14 @@ const Header: FC<IProps> = ({
   getMovies,
   setMovieCategory,
   setSearchQuery,
-  getSearchResults
+  getSearchResults,
+  clearMovieDetails
 }) => {
   const [showMobileNav, setShowMobileNav] = useState(false);
   const debouncedSearch = useDebouncedCallback(getSearchResults, 500);
+  const history = useHistory();
+  const { pathname } = useLocation();
+  const isHomePage = pathname === '/';
 
   const toggle = () => setShowMobileNav((state) => !state);
 
@@ -47,7 +53,7 @@ const Header: FC<IProps> = ({
     getMovies(movieCategory.type);
   }, [getMovies, movieCategory.type]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     document.body.style.overflow = showMobileNav ? 'hidden' : 'auto';
   }, [showMobileNav]);
 
@@ -74,7 +80,14 @@ const Header: FC<IProps> = ({
             <li
               key={item.id}
               className={`header-nav-item${item.id === movieCategory.id ? ' active-item' : ''}`}
-              onClick={() => setMovieCategory(item)}
+              onClick={() => {
+                if (!isHomePage) {
+                  clearMovieDetails();
+                  history.push('/');
+                }
+
+                setMovieCategory(item);
+              }}
             >
               <span className="header-list-name">
                 <i className={item.iconClass}></i>
@@ -84,18 +97,20 @@ const Header: FC<IProps> = ({
             </li>
           ))}
 
-          <input
-            className="search-input"
-            type="text"
-            placeholder="Search for a movie"
-            value={searchQuery}
-            onChange={(e) => {
-              const value = e.target.value;
+          {isHomePage && (
+            <input
+              className="search-input"
+              type="text"
+              placeholder="Search for a movie"
+              value={searchQuery}
+              onChange={(e) => {
+                const value = e.target.value;
 
-              setSearchQuery(value);
-              debouncedSearch(value);
-            }}
-          />
+                setSearchQuery(value);
+                debouncedSearch(value);
+              }}
+            />
+          )}
         </ul>
       </div>
     </div>
@@ -106,6 +121,12 @@ const mapStateToProps = ({ movies: { movieCategory, searchQuery } }: any) => ({
   movieCategory,
   searchQuery
 });
-const mapDispatchToProps = { getMovies, setMovieCategory, setSearchQuery, getSearchResults };
+const mapDispatchToProps = {
+  getMovies,
+  setMovieCategory,
+  setSearchQuery,
+  getSearchResults,
+  clearMovieDetails: clearCurrentMovieDetails
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);
