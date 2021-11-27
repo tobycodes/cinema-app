@@ -1,58 +1,34 @@
 import React from 'react';
-import numberFormatter from 'utils/numberFormatter';
+import { useSelector } from 'react-redux';
+
+import { useMovieDetails } from 'hooks/useMovieDetails';
+import { AVATAR_URL, COMPANY_AVATAR_URL, IMAGE_URL } from 'services/movieService';
 
 import './index.scss';
 
-const detailItems = [
-  {
-    id: 0,
-    name: 'Tagline',
-    value: 'Part of the journey is the end'
-  },
-  {
-    id: 1,
-    name: 'Budget',
-    value: `${numberFormatter(356000000, 1)}`
-  },
-  {
-    id: 2,
-    name: 'Revenue',
-    value: `${numberFormatter(28000000000, 1)}`
-  },
-  {
-    id: 3,
-    name: 'Status',
-    value: 'Released'
-  },
-  {
-    id: 4,
-    name: 'Release Date',
-    value: '2019-04-24'
-  },
-  {
-    id: 5,
-    name: 'Run Time',
-    value: '181 min'
-  }
-];
-
 const Overview = () => {
+  const currentMovie = useSelector(({ movies }) => movies.currentMovie);
+  const movieCast = useSelector(({ movies }) => movies.movieCredits.cast);
+  const movieDetails = useMovieDetails(currentMovie);
+
   return (
     <div className="overview">
       <div className="overview-column-1">
-        <div className="description">This is a description about the movie</div>
+        <div className="description">{currentMovie.overview}</div>
 
         <div className="cast">
           <div className="div-title">Cast</div>
           <table>
             <tbody>
-              <tr>
-                <td>
-                  <img src="http://placehold.it/54x81" alt="" />
-                </td>
-                <td>Robert Downing Jr.</td>
-                <td>Iron Man</td>
-              </tr>
+              {movieCast.map(({ cast_id, profile_path, name, character }) => (
+                <tr key={cast_id}>
+                  <td>
+                    <img src={profile_path ? IMAGE_URL + profile_path : AVATAR_URL} alt={name} />
+                  </td>
+                  <td>{name}</td>
+                  <td>{character}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
@@ -60,26 +36,32 @@ const Overview = () => {
       <div className="overview-column-2">
         <div className="overview-detail">
           <h6>Production Companies</h6>
-          <div className="product-company">
-            <img src="http://placehold.it/30x30" alt="" />
-            <span>Marvel</span>
-          </div>
+          {currentMovie.production_companies.map(({ name, logo_path }) => (
+            <div key={name} className="product-company">
+              <img src={logo_path ? IMAGE_URL + logo_path : COMPANY_AVATAR_URL} alt={name} />
+              <span>{name}</span>
+            </div>
+          ))}
         </div>
         <div className="overview-detail">
           <h6>Language(s)</h6>
           <p>
-            <a href="!#">English</a>
+            <span>{currentMovie.spoken_languages.map((l) => l.name).join(', ')}</span>
           </p>
         </div>
 
-        {detailItems.map((data) => (
-          <div className="overview-detail" key={data.id}>
-            <h6>{data.name}</h6>
-            <p>
-              <a href="!#">{data.value}</a>
-            </p>
-          </div>
-        ))}
+        {movieDetails
+          .filter(({ value }) => Boolean(value))
+          .map(({ id, name, value }) => {
+            return (
+              <div className="overview-detail" key={id}>
+                <h6 style={{ textTransform: 'capitalize' }}>{name}</h6>
+                <p>
+                  <span>{value}</span>
+                </p>
+              </div>
+            );
+          })}
       </div>
     </div>
   );

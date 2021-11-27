@@ -53,7 +53,7 @@ const Main: FC<IProps> = ({
       ) : (
         <>
           <Content />
-          <div style={{ height: '5px' }} ref={setDivRef}></div>
+          <div style={{ height: '5px' }} ref={setDivRef} />
         </>
       )}
     </div>

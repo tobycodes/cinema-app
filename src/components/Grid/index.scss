@@ -38,7 +38,7 @@
   align-items: center;
   display: none;
 
-  .grid-cell-button {
+  .grid-cell-link {
     background-color: #dd003f;
     padding: 8px 15px;
     text-transform: uppercase;
@@ -48,10 +48,8 @@
     font-weight: bold;
     outline: none;
 
-    a {
-      color: #ffffff;
-      text-decoration: none;
-    }
+    color: #ffffff !important;
+    text-decoration: none;
   }
 }
 

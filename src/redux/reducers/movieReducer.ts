@@ -1,30 +1,41 @@
-import { Movie } from '../../types/app';
+import { PaginatedRecord } from './../../types/app';
+import { AnyAction } from 'redux';
+import { Movie, MovieCredits, MovieImages, MovieReview, MovieVideos } from '../../types/app';
 import {
   SET_MOVIE_LIST,
   SET_PAGE_INFO,
   LOAD_MORE_MOVIE_RESULTS,
   SET_MOVIE_CATEGORY,
   SET_SEARCH_QUERY,
-  SET_SEARCH_RESULTS
+  SET_SEARCH_RESULTS,
+  SET_CURRENT_MOVIE_DETAILS,
+  CLEAR_CURRENT_MOVIE_DETAILS,
+  SET_CURRENT_MOVIE_CREDITS,
+  SET_CURRENT_MOVIE_IMAGES,
+  SET_CURRENT_MOVIE_REVIEWS,
+  SET_CURRENT_MOVIE_VIDEOS
 } from './../types';
 
 const initialState = {
-  list: [],
+  list: [] as Movie[],
   page: 1,
   totalPages: 1,
   movieCategory: { type: 'now_playing', name: 'Now Playing', id: 1 },
   searchQuery: '',
-  searchResults: []
+  searchResults: [] as Movie[],
+  currentMovie: {} as Movie,
+  movieImages: {} as MovieImages,
+  movieVideos: {} as MovieVideos,
+  movieCredits: {} as MovieCredits,
+  movieReviews: {} as PaginatedRecord<MovieReview>
 };
 
 //stackoverflow
-type Modify<T, R> = Omit<T, keyof R> & R;
+// type Modify<T, R> = Omit<T, keyof R> & R;
 
-type InitialState = typeof initialState;
+type MovieReducerType = typeof initialState;
 
-type MovieReducerType = Modify<InitialState, { list: Movie[]; searchResults: Movie[] }>;
-
-const movieReducer = (state = initialState, { type, payload }: any): MovieReducerType => {
+const movieReducer = (state = initialState, { type, payload }: AnyAction): MovieReducerType => {
   switch (type) {
     case SET_MOVIE_LIST:
       return { ...state, list: payload.sort(() => Math.random() - Math.random()) };
@@ -45,6 +56,31 @@ const movieReducer = (state = initialState, { type, payload }: any): MovieReduce
 
     case SET_SEARCH_RESULTS:
       return { ...state, searchResults: [...payload] };
+
+    case SET_CURRENT_MOVIE_DETAILS:
+      return { ...state, currentMovie: payload };
+
+    case CLEAR_CURRENT_MOVIE_DETAILS:
+      return {
+        ...state,
+        currentMovie: payload,
+        movieCredits: payload,
+        movieImages: payload,
+        movieVideos: payload,
+        movieReviews: payload
+      };
+
+    case SET_CURRENT_MOVIE_CREDITS:
+      return { ...state, movieCredits: payload };
+
+    case SET_CURRENT_MOVIE_IMAGES:
+      return { ...state, movieImages: payload };
+
+    case SET_CURRENT_MOVIE_REVIEWS:
+      return { ...state, movieReviews: payload };
+
+    case SET_CURRENT_MOVIE_VIDEOS:
+      return { ...state, movieVideos: payload };
 
     default:
       return state;

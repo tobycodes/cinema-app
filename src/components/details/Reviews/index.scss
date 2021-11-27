@@ -21,7 +21,11 @@
     h3 {
       font-size: 18px;
       font-weight: 700;
-      margin-bottom: 20px;
+      margin-bottom: 12px;
+    }
+
+    .review:not(:last-child) {
+      margin-bottom: 30px;
     }
   }
 

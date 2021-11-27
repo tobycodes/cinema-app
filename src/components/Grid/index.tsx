@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { Link } from 'react-router-dom';
 import { Movie } from 'types/app';
 import Rating from '../Rating';
 
@@ -16,7 +17,9 @@ const Grid: FC<IProps> = ({ movieList }) => {
         return (
           <LazyImage key={id} className="grid-cell" src={imageUrl}>
             <div className="grid-read-more">
-              <button className="grid-cell-button">Read More</button>
+              <Link to={`/${id}/${title}/details`} className="grid-cell-link">
+                Read More
+              </Link>
             </div>
             <div className="grid-detail">
               <span className="grid-detail-title">{title}</span>
