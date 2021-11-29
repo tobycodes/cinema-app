@@ -104,6 +104,16 @@ jobs:
           command: npm run prettier:check
       - *notify-fail-on-slack
 
+  test:
+    executor: app-executor
+    steps:
+      - checkout
+      - *show-current-branch-name
+      - *restore-cache
+      - run:
+          name: Run tests
+          command: npm run test --watchAll=false
+
   terraform-validate:
     executor: terraform-executor
     steps:
@@ -281,10 +291,19 @@ workflows:
                 - develop
                 - staging
                 - master
-      - terraform-validate:
+      - test:
           requires:
             - linting
             - prettier
+          filters:
+            branches:
+              only:
+                - develop
+                - staging
+                - master
+      - terraform-validate:
+          requires:
+            - test
           filters:
             branches:
               only:

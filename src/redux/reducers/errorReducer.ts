@@ -1,10 +1,17 @@
+import { AnyAction } from 'redux';
 import { SET_ERRORS } from './../types';
-const initialState = {};
+const initialState = {
+  message: '',
+  statusCode: null as number | null
+};
 
-const errorReducer = (state = initialState, { type, payload }: any): any => {
+type ErrorStateObject = typeof initialState;
+
+const errorReducer = (state = initialState, { type, payload }: AnyAction): ErrorStateObject => {
   switch (type) {
     case SET_ERRORS:
-      return { ...state, message: payload };
+      return { ...state, ...payload };
+
     default:
       return state;
   }
