@@ -3,7 +3,8 @@ import {
   MovieImages,
   MovieReview,
   MovieVideos,
-  PaginatedRecord
+  PaginatedRecord,
+  ErrorObject
 } from './../../types/app';
 import { Dispatch } from 'redux';
 
@@ -53,12 +54,14 @@ export const getSearchResults = (query: string) => async (dispatch: Dispatch) =>
     dispatch(setSearchResults(movieResults));
   } catch (error: any) {
     if (error.response) {
-      dispatch(setError(error.response.data.message));
+      dispatch(
+        setError({ message: error.response.data.status_message, statusCode: error.response.status })
+      );
     }
   }
 };
 
-export const getMovieDetails = (id: number) => async (dispatch: Dispatch) => {
+export const getMovieDetails = (id: string) => async (dispatch: Dispatch) => {
   if (!id) return;
 
   dispatch(setLoading(true));
@@ -80,7 +83,9 @@ export const getMovieDetails = (id: number) => async (dispatch: Dispatch) => {
     });
   } catch (error: any) {
     if (error.response) {
-      dispatch(setError(error.response.data.message));
+      dispatch(
+        setError({ message: error.response.data.status_message, statusCode: error.response.status })
+      );
     }
   } finally {
     dispatch(setLoading(false));
@@ -94,9 +99,10 @@ const fetchMovies = async (type: string, page: number, dispatch: Dispatch) => {
 
     return generateMovieArray(results);
   } catch (error: any) {
-    if (error.response) {
-      dispatch(setError(error.response.data.message));
-    }
+    if (error.response)
+      dispatch(
+        setError({ message: error.response.data.status_message, statusCode: error.response.status })
+      );
 
     return [];
   }
@@ -104,7 +110,15 @@ const fetchMovies = async (type: string, page: number, dispatch: Dispatch) => {
 
 export const setSearchQuery = (query: string) => ({ type: SET_SEARCH_QUERY, payload: query });
 
-export const setError = (error: string) => ({ type: SET_ERRORS, payload: error });
+export const setError = (error: ErrorObject) => {
+  const { message, statusCode } = error;
+  return {
+    type: SET_ERRORS,
+    payload: { message, statusCode }
+  };
+};
+
+export const clearError = () => ({ type: SET_ERRORS, payload: { message: '', statusCode: null } });
 
 export const setSearchResults = (results: Movie[]) => ({
   type: SET_SEARCH_RESULTS,

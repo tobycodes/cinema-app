@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState, useLayoutEffect } from 'react';
 import { Link, useLocation, useHistory } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
 
 import logo from 'assets/logo.svg';
@@ -43,6 +43,7 @@ const Header: FC<IProps> = ({
 }) => {
   const [showMobileNav, setShowMobileNav] = useState(false);
   const debouncedSearch = useDebouncedCallback(getSearchResults, 500);
+
   const history = useHistory();
   const { pathname } = useLocation();
   const isHomePage = pathname === '/';
@@ -56,6 +57,14 @@ const Header: FC<IProps> = ({
   useLayoutEffect(() => {
     document.body.style.overflow = showMobileNav ? 'hidden' : 'auto';
   }, [showMobileNav]);
+
+  const errorObj = useSelector(({ error }) => error);
+
+  useEffect(() => {
+    if (errorObj.message || errorObj.statusCode) {
+      throw new Error(errorObj.message);
+    }
+  }, [errorObj]);
 
   return (
     <div className="header-nav-wrapper">
