@@ -1,5 +1,5 @@
 import React, { FC, useEffect } from 'react';
-import { connect, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import Crew from 'components/details/Crew';
 import Media from 'components/details/Media';
@@ -14,12 +14,7 @@ import { getMovieDetails, clearCurrentMovieDetails } from 'redux/actions/movies'
 import './index.scss';
 import { IMAGE_URL } from 'services/movieService';
 
-interface IProps {
-  props: any;
-  bgImageUrl: string;
-}
-
-const Details: FC<IProps> = () => {
+const Details: FC = () => {
   const currentMovie = useSelector(({ movies }) => movies.currentMovie);
   const loading = useSelector(({ app }) => app.loading);
 
@@ -27,7 +22,7 @@ const Details: FC<IProps> = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (id) dispatch(getMovieDetails(+id));
+    if (id) dispatch(getMovieDetails(id));
 
     return () => {
       dispatch(clearCurrentMovieDetails());
@@ -98,9 +93,4 @@ const Child: FC<{ label: string }> = ({ children }) => {
   return <div>{children}</div>;
 };
 
-const stateProps = () => ({
-  bgImageUrl:
-    'https://images.unsplash.com/photo-1622495548018-4fc6f78d7bef?ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1650&q=80'
-});
-
-export default connect(stateProps)(Details);
+export default Details;
