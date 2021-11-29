@@ -37,7 +37,7 @@ const searchMovies = async (query: string) => {
   return data;
 };
 
-const getMovie = async (id: number) => {
+const getMovie = async (id: string) => {
   const { data } = await axios.get<any, Res<Movie>>(
     `${API_URL}/movie/${id}?api_key=${API_KEY}&language=en-US`
   );
@@ -45,7 +45,7 @@ const getMovie = async (id: number) => {
   return data;
 };
 
-const getMovieCredits = async (id: number) => {
+const getMovieCredits = async (id: string) => {
   const { data } = await axios.get<any, Res<MovieCredits>>(
     `${API_URL}/movie/${id}/credits?api_key=${API_KEY}`
   );
@@ -53,7 +53,7 @@ const getMovieCredits = async (id: number) => {
   return data;
 };
 
-const getMovieImages = async (id: number) => {
+const getMovieImages = async (id: string) => {
   const { data } = await axios.get<any, Res<MovieImages>>(
     `${API_URL}/movie/${id}/images?api_key=${API_KEY}`
   );
@@ -61,7 +61,7 @@ const getMovieImages = async (id: number) => {
   return data;
 };
 
-const getMovieVideos = async (id: number) => {
+const getMovieVideos = async (id: string) => {
   const { data } = await axios.get<any, Res<MovieVideos>>(
     `${API_URL}/movie/${id}/videos?api_key=${API_KEY}`
   );
@@ -69,7 +69,7 @@ const getMovieVideos = async (id: number) => {
   return data;
 };
 
-const getMovieReviews = async (id: number) => {
+const getMovieReviews = async (id: string) => {
   const { data } = await axios.get<any, PaginatedRes<MovieReview>>(
     `${API_URL}/movie/${id}/reviews?api_key=${API_KEY}`
   );

@@ -2,6 +2,11 @@ import { AxiosResponse } from 'axios';
 
 import store from 'redux/store';
 
+export type ErrorObject = Partial<{
+  message: string;
+  statusCode: string;
+}>;
+
 export type Res<T> = AxiosResponse<T>;
 
 export type PaginatedRecord<T> = {
