@@ -33,9 +33,9 @@ const initialState = {
 //stackoverflow
 // type Modify<T, R> = Omit<T, keyof R> & R;
 
-type MovieReducerType = typeof initialState;
+type MovieStateObject = typeof initialState;
 
-const movieReducer = (state = initialState, { type, payload }: AnyAction): MovieReducerType => {
+const movieReducer = (state = initialState, { type, payload }: AnyAction): MovieStateObject => {
   switch (type) {
     case SET_MOVIE_LIST:
       return { ...state, list: payload.sort(() => Math.random() - Math.random()) };
