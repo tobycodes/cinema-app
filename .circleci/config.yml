@@ -10,6 +10,11 @@ executors:
     docker:
       - image: 'cimg/base:stable'
     resource_class: small
+  docker-publisher:
+    environment:
+      IMAGE_NAME: tobyscript/cinema-app
+    docker:
+      - image: circleci/buildpack-deps:stretch
   terraform-executor:
     docker:
       - image: hashicorp/terraform:latest
@@ -68,6 +73,13 @@ aliases:
         - artifacts
 
 jobs:
+  add-github-deploy-key:
+    executor: app-executor
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - '29:35:a0:40:16:0f:c7:10:7b:65:92:dc:6d:82:6b:ab'
+
   build:
     executor: app-executor
     steps:
@@ -113,6 +125,28 @@ jobs:
       - run:
           name: Run tests
           command: npm run test --watchAll=false
+
+  publish-to-docker:
+    executor: docker-publisher
+    steps:
+      - checkout
+      - *show-current-branch-name
+      - setup_remote_docker
+      - *restore-cache
+      - run: docker login -u "${DOCKER_HUB_USER}" -p "${DOCKER_HUB_PASSWORD}"
+      - run: docker build -t ${IMAGE_NAME}:latest .
+      - run:
+          name: Tag and Publish Docker Image
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]
+            then 
+              docker tag ${IMAGE_NAME}:latest ${IMAGE_NAME}:stable-${CIRCLE_BUILD_NUM} && docker push ${IMAGE_NAME}:stable-${CIRCLE_BUILD_NUM}
+            elif [ "${CIRCLE_BRANCH}" == "staging" ]
+            then 
+              docker tag ${IMAGE_NAME}:latest ${IMAGE_NAME}:staging-${CIRCLE_BUILD_NUM} && docker push ${IMAGE_NAME}:staging-${CIRCLE_BUILD_NUM}
+            else
+              docker tag ${IMAGE_NAME}:latest ${IMAGE_NAME}:dev-${CIRCLE_BUILD_NUM} && docker push ${IMAGE_NAME}:dev-${CIRCLE_BUILD_NUM}
+            fi
 
   terraform-validate:
     executor: terraform-executor
@@ -164,15 +198,7 @@ jobs:
           command: |
             AWS_BUCKET_NAME=$(cat artifacts/cinema_bucket_name.txt | sed 's/\"//g')
             echo $AWS_BUCKET_NAME
-            if [ "${CIRCLE_BRANCH}" == "master" ]
-            then 
-              aws --region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_BUCKET_NAME} --delete
-            elif [ "${CIRCLE_BRANCH}" == "staging" ]
-            then 
-              aws --region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_BUCKET_NAME} --delete
-            else
-              aws --region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_BUCKET_NAME} --delete
-            fi
+            aws --region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_BUCKET_NAME} --delete
       - *persist-to-workspace
       - *notify-fail-on-slack
 
@@ -191,15 +217,7 @@ jobs:
             CLOUDFRONT_DISTRIBUTION_ID=$(cat artifacts/cloudfront_distribution_id.txt | sed 's/\"//g')
             echo $CLOUDFRONT_DISTRIBUTION_ID
             aws configure set preview.cloudfront true
-            if [ "${CIRCLE_BRANCH}" == "master" ]
-            then 
-              aws cloudfront create-invalidation --distribution-id ${CLOUDFRONT_DISTRIBUTION_ID} --paths /*
-            elif [ "${CIRCLE_BRANCH}" == "staging" ]
-            then 
-              aws cloudfront create-invalidation --distribution-id ${CLOUDFRONT_DISTRIBUTION_ID} --paths /*
-            else
-              aws cloudfront create-invalidation --distribution-id ${CLOUDFRONT_DISTRIBUTION_ID} --paths /*
-            fi
+            aws cloudfront create-invalidation --distribution-id ${CLOUDFRONT_DISTRIBUTION_ID} --paths /*
       - *notify-fail-on-slack
 
   notify-via-slack:
@@ -272,7 +290,10 @@ jobs:
 workflows:
   build_and_deploy:
     jobs:
-      - build
+      - add-github-deploy-key
+      - build:
+          requires:
+            - add-github-deploy-key
       - linting:
           requires:
             - build
@@ -313,6 +334,15 @@ workflows:
       - terraform-plan-and-apply:
           requires:
             - terraform-validate
+          filters:
+            branches:
+              only:
+                - develop
+                - staging
+                - master
+      - publish-to-docker:
+          requires:
+            - test
           filters:
             branches:
               only:
