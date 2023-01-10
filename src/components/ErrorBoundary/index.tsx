@@ -1,5 +1,5 @@
 import ErrorPage from 'pages/error';
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import React, { Component, ErrorInfo } from 'react';
 import { connect } from 'react-redux';
 import * as Sentry from '@sentry/react';
 
@@ -7,7 +7,10 @@ import { clearError } from 'redux/actions/movies';
 import { RootState } from 'types/app';
 import { isProd } from 'utils/isProd';
 
-type IProps = { children: ReactNode[]; clearError: (error: RootState['error']) => void };
+type IProps = {
+  children: JSX.Element | JSX.Element[];
+  clearError: (error: RootState['error']) => void;
+};
 
 export class ErrorBoundary extends Component<IProps> {
   state = {
