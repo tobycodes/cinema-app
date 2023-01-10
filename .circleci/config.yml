@@ -73,6 +73,13 @@ aliases:
         - artifacts
 
 jobs:
+  add-github-deploy-key:
+    executor: app-executor
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - '29:35:a0:40:16:0f:c7:10:7b:65:92:dc:6d:82:6b:ab'
+
   build:
     executor: app-executor
     steps:
@@ -283,12 +290,10 @@ jobs:
 workflows:
   build_and_deploy:
     jobs:
-      - add-github-deploy-key:
-          steps:
-            - add_ssh_keys:
-                fingerprints:
-                  - '29:35:a0:40:16:0f:c7:10:7b:65:92:dc:6d:82:6b:ab'
-      - build
+      - add-github-deploy-key
+      - build:
+          requires:
+            - add-github-deploy-key
       - linting:
           requires:
             - build
