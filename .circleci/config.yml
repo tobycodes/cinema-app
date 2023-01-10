@@ -326,9 +326,18 @@ workflows:
                 - develop
                 - staging
                 - master
-      - terraform-validate:
+      - publish-to-docker:
           requires:
             - test
+          filters:
+            branches:
+              only:
+                - develop
+                - staging
+                - master
+      - terraform-validate:
+          requires:
+            - publish-to-docker
           filters:
             branches:
               only:
@@ -338,15 +347,6 @@ workflows:
       - terraform-plan-and-apply:
           requires:
             - terraform-validate
-          filters:
-            branches:
-              only:
-                - develop
-                - staging
-                - master
-      - publish-to-docker:
-          requires:
-            - test
           filters:
             branches:
               only:
