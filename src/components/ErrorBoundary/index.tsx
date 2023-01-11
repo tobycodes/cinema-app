@@ -1,22 +1,11 @@
 import ErrorPage from 'pages/error';
-import React, { Component, ErrorInfo } from 'react';
-import { connect } from 'react-redux';
+import { Component, ErrorInfo } from 'react';
 import * as Sentry from '@sentry/react';
 
-import { clearError } from 'redux/actions/movies';
-import { RootState } from 'types/app';
 import { isProd } from 'utils/isProd';
 
-type IProps = {
-  children: JSX.Element | JSX.Element[];
-  clearError: (error: RootState['error']) => void;
-};
-
-export class ErrorBoundary extends Component<IProps> {
-  state = {
-    hasError: false,
-    eventId: null
-  };
+export class ErrorBoundary extends Component {
+  state = { hasError: false, eventId: null };
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     if (isProd()) {
@@ -33,16 +22,13 @@ export class ErrorBoundary extends Component<IProps> {
     }
   }
 
-  clearState = () => {
-    this.setState({ hasError: false });
-    this.props.clearError({ message: '', statusCode: null });
-  };
+  clearState = () => this.setState({ hasError: false });
 
   render() {
-    if (this.state.hasError) return <ErrorPage clearErrorState={this.clearState} />;
+    if (this.state.hasError) return <ErrorPage onClearError={this.clearState} />;
 
     return this.props.children;
   }
 }
 
-export default connect(null, { clearError })(ErrorBoundary);
+export default ErrorBoundary;

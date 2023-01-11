@@ -1,22 +1,23 @@
-import React, { FC } from 'react';
-import { useSelector } from 'react-redux';
+import { FC } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { clearError } from 'redux/actions/movies';
 
 import './index.scss';
 
-type IProps = {
-  clearErrorState: () => void;
-};
+interface IProps {
+  onClearError?: () => void;
+}
 
-const ErrorPage: FC<IProps> = ({ clearErrorState }) => {
-  const errorMessage = useSelector(({ error }) => error.message);
-  const statusCode = useSelector(({ error }) => error.statusCode);
+const ErrorPage: FC<IProps> = ({ onClearError }) => {
+  const { message, statusCode } = useSelector(({ error }) => error);
+  const dispatch = useDispatch();
 
   return (
     <div className="error-page">
       <h1 className="error-header">Oops!</h1>
       <p className="error-msg">Something went wrong.</p>
-      {(errorMessage || statusCode) && (
+      {(message || statusCode) && (
         <p className="error-sub">
           Reason: <br />
           {statusCode && (
@@ -24,10 +25,17 @@ const ErrorPage: FC<IProps> = ({ clearErrorState }) => {
               Error failed with status code {statusCode} <br />
             </span>
           )}
-          {errorMessage}
+          {message}
         </p>
       )}
-      <Link className="error-link" to={'/'} onClick={() => clearErrorState && clearErrorState()}>
+      <Link
+        className="error-link"
+        to={'/'}
+        onClick={() => {
+          dispatch(clearError());
+          onClearError?.();
+        }}
+      >
         <i className="icon-home"></i> Go back to home page.
       </Link>
     </div>
