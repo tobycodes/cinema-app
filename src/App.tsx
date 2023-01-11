@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC, Fragment } from 'react';
 import { Switch } from 'react-router-dom';
 
 import { useSmoothScroll } from 'hooks/useSmoothScroll';
@@ -13,14 +13,16 @@ const App: FC = () => {
 
   return (
     <ErrorBoundary>
-      <Header />
-      <div className="app">
-        <Switch>
-          {appRoutes.map((route, idx) => (
-            <CustomRoute key={idx} {...route} />
-          ))}
-        </Switch>
-      </div>
+      <Fragment>
+        <Header />
+        <div className="app">
+          <Switch>
+            {appRoutes.map((route, idx) => (
+              <CustomRoute key={idx} {...route} />
+            ))}
+          </Switch>
+        </div>
+      </Fragment>
     </ErrorBoundary>
   );
 };
