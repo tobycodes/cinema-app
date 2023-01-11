@@ -7,6 +7,7 @@ interface IProps {
   style?: CSSProperties;
   className?: string;
   src: string;
+  children: React.ReactNode;
 }
 
 const LazyImage: FC<IProps> = ({ children, className, src, style }) => {

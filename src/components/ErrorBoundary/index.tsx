@@ -4,7 +4,7 @@ import * as Sentry from '@sentry/react';
 
 import { isProd } from 'utils/isProd';
 
-export class ErrorBoundary extends Component {
+export class ErrorBoundary extends Component<{ children: React.ReactNode }> {
   state = { hasError: false, eventId: null };
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {

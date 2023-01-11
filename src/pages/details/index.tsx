@@ -89,7 +89,7 @@ const Details: FC = () => {
   );
 };
 
-const Child: FC<{ label: string }> = ({ children }) => {
+const Child: FC<{ label: string; children: React.ReactNode }> = ({ children }) => {
   return <div>{children}</div>;
 };
 
